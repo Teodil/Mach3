@@ -143,7 +143,7 @@ namespace _3_match
             int y = btn.Location.Y / 50 - 1;
             buttons[x, y] = null;
             Controls.Remove(btn);
-            DefoultBoom.Play();
+            //DefoultBoom.Play();
         }
         public void RespawnBTN()
         {
@@ -292,7 +292,7 @@ namespace _3_match
         }
 
         //System.Timers.Timer timer = new System.Timers.Timer();
-        string time = "5:00";
+        string time = "05:00";
         int i=300;
         int tk;
         private void StartTimer()
@@ -318,6 +318,13 @@ namespace _3_match
                 string label = span.ToString(@"hh\:mm");
                 TimeText.Text = label.ToString();
                 TimeText.Refresh();
+                if (TimeText.Text == "00:00")
+                {
+                    MessageBox.Show($"Время закончилось ваш резултат:{ScoreText.Text}", "Время вышло", MessageBoxButtons.OK);
+                    timer.Dispose();
+                    this.Dispose();
+                    this.Close();
+                }
             }));
             };
             timer.Start();
