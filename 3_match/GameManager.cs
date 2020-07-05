@@ -57,6 +57,7 @@ namespace _3_match
         static Button currentBTN;
         static List<Button> collector = new List<Button>();
         static Button[,] toTest = new Button[8, 8];
+        public static List<Button> RememberList = new List<Button>();
         public static bool CanMatch = true;
 
         static void CopyBoard(Button[,] source)
@@ -109,6 +110,7 @@ namespace _3_match
                 //SettleBlocks(board)
                 game.RespawnBTN();
             }
+            RememberList.Clear();
         }
 
         private static void TestButton(int x, int y)
@@ -122,7 +124,7 @@ namespace _3_match
 
             for (int j=x+1; j < 8; j++)
             {
-                if (toTest[x, y].Text == toTest[j, y].Text)
+                if (toTest[x, y].BackColor == toTest[j, y].BackColor)
                 {
                     HorizontalList.Add(toTest[j,y]);
                 }
@@ -138,7 +140,7 @@ namespace _3_match
             collector.Add(toTest[x, y]);
             for (int k = y+1; k < 8; k++)
             {
-                if (toTest[x, y].Text == toTest[x, k].Text)
+                if (toTest[x, y].BackColor == toTest[x, k].BackColor)
                 {
                     VerticalList.Add(toTest[x, k]);
                 }
@@ -152,13 +154,73 @@ namespace _3_match
                 VerticalList.Clear();
             }
             
-            for(int j = 1; j < HorizontalList.Count; j++)
+            for(int j = 0; j < HorizontalList.Count; j++)
             {
-                collector.Add(HorizontalList[j]);
+                if (j == 3 && HorizontalList.Count == 4 && !RememberList.Contains(HorizontalList[j]) && HorizontalList[j].Text!="-" && HorizontalList[j].Text != "|" && HorizontalList[j].Text != "(%)")
+                {
+                    game.RespawnSpecialBTN(HorizontalList[j], "horizontal");
+                    RememberList.Add(HorizontalList[j]);
+                    game.SetScore(1);
+                }
+                if (j == 4 && HorizontalList.Count >= 5)
+                {
+                    game.RespawnSpecialBTN(HorizontalList[j], "bomb");
+                    RememberList.Add(HorizontalList[j]);
+                    game.SetScore(1);
+                }
+                else if (!RememberList.Contains(HorizontalList[j]))
+                {
+                    if (HorizontalList[j].Text == "-")
+                    {
+                        addAllHorizontal(HorizontalList[j]);
+                    }
+                    else if(HorizontalList[j].Text == "|")
+                    {
+                        addAllVertical(HorizontalList[j]);
+                    }
+                    else if(HorizontalList[j].Text == "(%)")
+                    {
+                        BombActivation(HorizontalList[j]);
+                    }
+                    else
+                    {
+                        collector.Add(HorizontalList[j]);
+                    }
+                }
             }
-            for (int j = 1; j < VerticalList.Count; j++)
+            for (int j = 0; j < VerticalList.Count; j++)
             {
-                collector.Add(VerticalList[j]);
+                if (j == 3 && VerticalList.Count == 4 && !RememberList.Contains(VerticalList[j]) && VerticalList[j].Text!="|" && VerticalList[j].Text != "-" && VerticalList[j].Text != "(%)")
+                {
+                    game.RespawnSpecialBTN(VerticalList[j], "vertical");
+                    RememberList.Add(VerticalList[j]);
+                    game.SetScore(1);
+                }
+                if (j == 4 && VerticalList.Count >= 5)
+                {
+                    game.RespawnSpecialBTN(VerticalList[j], "bomb");
+                    RememberList.Add(VerticalList[j]);
+                    game.SetScore(1);
+                }
+                else if (!RememberList.Contains(VerticalList[j]))
+                {
+                    if (VerticalList[j].Text == "-")
+                    {
+                        addAllHorizontal(VerticalList[j]);
+                    }
+                    else if (VerticalList[j].Text == "|")
+                    {
+                        addAllVertical(VerticalList[j]);
+                    }
+                    else if(VerticalList[j].Text == "(%)")
+                    {
+                        BombActivation(VerticalList[j]);
+                    }
+                    else
+                    {
+                        collector.Add(VerticalList[j]);
+                    }
+                }
             }
 
             // Тайл уже проверен, пропускаем
@@ -194,6 +256,88 @@ namespace _3_match
                  TestButton(x, y + 1);
               */
 
+        }
+        private static void addAllHorizontal(Button btn)
+        {
+            int y = btn.Location.Y / 50 - 1;
+            for(int i = 0; i < 8; i++)
+            {
+                if (!collector.Contains(toTest[i, y]))
+                {
+                    if (toTest[i, y].Text == "|")
+                    {
+                        addAllVertical(toTest[i, y]);
+                    }
+                    else if (toTest[i, y].Text == "(%)")
+                    {
+                        BombActivation(toTest[i, y]);
+                    }
+                    else
+                    {
+                        collector.Add(toTest[i, y]);
+                    }
+                }
+                   
+            }
+        }
+        private static void addAllVertical(Button btn)
+        {
+            int x = btn.Location.X / 50 - 1;
+            for (int i = 0; i < 8; i++)
+            {
+                if (!collector.Contains(toTest[x, i]))
+                {
+                    if (toTest[x, i].Text == "-")
+                    {
+                        addAllHorizontal(toTest[x, i]);
+                    }
+                    else if (toTest[x, i].Text == "(%)")
+                    {
+                        BombActivation(toTest[x, i]);
+                    }
+                    else
+                    {
+                        collector.Add(toTest[x, i]);
+                    }
+                }
+            }
+        }
+        private static void BombActivation(Button btn)
+        {
+            int x = btn.Location.X / 50 - 1;
+            int y = btn.Location.Y / 50 - 1;
+            for(int j = x - 1; j <= x + 1; j++)
+            {
+                for(int k = y - 1; k <= y + 1; k++)
+                {
+                    try
+                    {
+                        if (!collector.Contains(toTest[j, k]))
+                        {
+                            if (toTest[j, k].Text == "-")
+                            {
+                                addAllHorizontal(toTest[j, k]);
+                            }
+                            else if (toTest[j, k].Text == "|")
+                            {
+                                addAllHorizontal(toTest[j, k]);
+                            }
+                            else if (toTest[j, k].Text == "(%)" && j != x && k!= y)
+                            {
+                                BombActivation(toTest[j, k]);
+                            }
+                            else
+                            {
+                                collector.Add(toTest[j, k]);
+                            }
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
         }
     }
 }

@@ -23,44 +23,13 @@ namespace _3_match
 
         private Button[,] buttons = new Button[8,8];
         private Label[,] Labels = new Label[8, 8];
-        private SoundPlayer DefoultBoom = new SoundPlayer(@".../Sounds/DefoultBoom.wav");
-
+        private SoundPlayer DefoultBoom = new SoundPlayer(@"C:\Users\Goba-PC\source\repos\3_match\Mach3\3_match\Sounds\DefoultBoom.wav");
+        string dir = AppDomain.CurrentDomain.BaseDirectory;
 
         private void Game_Load(object sender, EventArgs e)
         {
             GameManager.game = this;
-            for(int y = 0; y < 8; y++)
-            {
-                for(int x=0; x<8; x++)
-                {
-                    buttons[x, y] = new Button();
-                    buttons[x, y].Height = 50;
-                    buttons[x, y].Width = 50;
-                    buttons[x, y].Location = new Point((x+1)* 50, (y+1)* 50);
-                    Random random = new Random();
-                    Thread.Sleep(15);//Задержка потока т.к рандомизатор берёт как сид время и если не будет хоть какой-то задержки то будут одни и те же числа
-                    buttons[x, y].Text = random.Next(1, 5).ToString();
-                    if(buttons[x, y].Text == "1")
-                    {
-                        buttons[x, y].BackColor = Color.Brown;
-                    }
-                    if (buttons[x, y].Text == "2")
-                    {
-                        buttons[x, y].BackColor = Color.Red;
-                    }
-                    if (buttons[x, y].Text == "3")
-                    {
-                        buttons[x, y].BackColor = Color.Aquamarine;
-                    }
-                    if (buttons[x, y].Text == "4")
-                    {
-                        buttons[x, y].BackColor = Color.DarkBlue;
-                    }
-                    buttons[x, y].Click += ButtonClick;
-                    this.Controls.Add(buttons[x, y]);
-                }
-            }
-            for(int y = 0; y < 8; y++)
+            /*for(int y = 0; y < 8; y++)
             {
                 for(int x=0; x < 8; x++)
                 {
@@ -73,7 +42,7 @@ namespace _3_match
                     Labels[x, y].Text += $" {buttons[x, y].Location.X.ToString()} {buttons[x, y].Location.Y.ToString()}";
                     this.Controls.Add(Labels[x, y]);
                 }
-            }
+            }*/
         }
         void ButtonClick(object sender, EventArgs e)
         {
@@ -108,18 +77,19 @@ namespace _3_match
             Animate(x1, y1, x2, y2);
             LabelText();
             GameManager.Mathes = 0;
+            GameManager.RememberList.Clear();
             GameManager.MatchAndClear(buttons);
-            if (GameManager.Mathes==0)
+            /*if (GameManager.Mathes==0)
             {
                 buttons[x1, y1] = buffer1;
                 buttons[x2, y2] = buffer2;
                 Animate(x2, y2, x1, y1);
                 LabelText();
-            }
+            }*/
         }
         public void LabelText()
         {
-            for (int y = 0; y < 8; y++)
+            /*for (int y = 0; y < 8; y++)
             {
                 for (int x = 0; x < 8; x++)
                 {
@@ -135,7 +105,7 @@ namespace _3_match
                         Labels[x, y].BackColor = Color.White;
                     }
                 }
-            }
+            }*/
         }
         public void DestroyBTN(Button btn) 
         {
@@ -143,7 +113,32 @@ namespace _3_match
             int y = btn.Location.Y / 50 - 1;
             buttons[x, y] = null;
             Controls.Remove(btn);
-            //DefoultBoom.Play();
+            DefoultBoom.Play();
+        }
+        public void DestroyForSpecialBTN(Button btn)
+        {
+            Controls.Remove(btn);
+        }
+        public void RespawnSpecialBTN(Button btn, string type)
+        {
+            int x = btn.Location.X / 50 - 1;
+            int y = btn.Location.Y / 50 - 1;
+            if (type == "vertical")
+            {
+                buttons[x, y].Text = "|";
+                buttons[x, y].BackColor = btn.BackColor;
+            }
+            if (type == "horizontal")
+            {
+                buttons[x, y].Text = "-";
+                buttons[x, y].BackColor = btn.BackColor;
+            }
+            if (type == "bomb")
+            {
+                buttons[x, y].Text = "(%)";
+                Controls.Add(buttons[x, y]);
+            }
+            //buttons[x, y].Click += ButtonClick;
         }
         public void RespawnBTN()
         {
@@ -165,28 +160,35 @@ namespace _3_match
                         else
                         {
                             Random random = new Random();
-                            Thread.Sleep(50);
+                            Thread.Sleep(100);
                             buttons[x, y] = new Button();
                             this.Controls.Add(buttons[x, y]);
                             buttons[x, y].Height = 50;
                             buttons[x, y].Width = 50;
-                            buttons[x, y].Text = random.Next(1, 5).ToString();
+                            int type = random.Next(1, 5);
                             buttons[x, y].Click += ButtonClick;
-                            if (buttons[x, y].Text == "1")
+                            if (type == 1)
                             {
                                 buttons[x, y].BackColor = Color.Brown;
+                                buttons[x, y].BackgroundImage = Image.FromFile(dir + "\\Images\\Triangle.jpg");
                             }
-                            if (buttons[x, y].Text == "2")
+                            if (type == 2)
                             {
                                 buttons[x, y].BackColor = Color.Red;
+                                buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Romb.jpg");
+
                             }
-                            if (buttons[x, y].Text == "3")
+                            if (type == 3)
                             {
                                 buttons[x, y].BackColor = Color.Aquamarine;
+                                buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Circle.jpg");
+
                             }
-                            if (buttons[x, y].Text == "4")
+                            if (type == 4)
                             {
                                 buttons[x, y].BackColor = Color.DarkBlue;
+                                buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Squre.jpg");
+
                             }
                             buttons[x, y].Location = new Point((x + 1) * 50, (y + 1) * 50);
                         }
@@ -194,15 +196,18 @@ namespace _3_match
                     }
                 }
             }
-            LabelText();
+            //LabelText();
             GameManager.MatchAndClear(buttons);
         }
 
-        private async void Game_Shown(object sender, EventArgs e)
+        private void Game_Shown(object sender, EventArgs e)
         {
             Thread.Sleep(1500);
+            string time = "01:00";
+            TimeText.Text = time;
+            RespawnBTN();
             CheckMatchesAfterRespawn();
-            CheckForIllegalCrossThreadCalls = false;
+            //CheckForIllegalCrossThreadCalls = false;
             Thread TimerThread = new Thread(() =>
             {
                 StartTimer();
@@ -213,6 +218,7 @@ namespace _3_match
         {
             if (GameManager.CanMatch)
             {
+                GameManager.RememberList.Clear();
                 Thread.Sleep(100);
                 GameManager.MatchAndClear(buttons);
             }
@@ -242,7 +248,7 @@ namespace _3_match
         }
         public void Animate(int x,int y)
         {
-            int speed = 10;
+            int speed = 25;
             int XPosS = (x+1) * 50;
             int YPosS = y * 50;
             int XPosF = (x+1) * 50;
@@ -284,16 +290,8 @@ namespace _3_match
             ScoreText.Text = (Convert.ToInt32(ScoreText.Text) + add).ToString();
         }
 
-
-
-        private async void timer1_Tick(object sender, EventArgs e)
-        {
-            
-        }
-
         //System.Timers.Timer timer = new System.Timers.Timer();
-        string time = "05:00";
-        int i=300;
+        int i=60;
         int tk;
         private void StartTimer()
         {
@@ -306,7 +304,7 @@ namespace _3_match
                  TimeText.BeginInvoke((MethodInvoker)(() => TimeText.Text = (date - DateTime.UtcNow).ToString()));
              };
              Timer.Start();*/
-            TimeText.Text = time;
+            //TimeText.Text = time;
             timer.AutoReset = true; // Чтобы операции удаления не перекрывались
             timer.Interval = 1 * 1000;
             timer.Enabled = true;
@@ -320,8 +318,8 @@ namespace _3_match
                 TimeText.Refresh();
                 if (TimeText.Text == "00:00")
                 {
-                    MessageBox.Show($"Время закончилось ваш резултат:{ScoreText.Text}", "Время вышло", MessageBoxButtons.OK);
                     timer.Dispose();
+                    MessageBox.Show($"Время закончилось ваш резултат:{ScoreText.Text}", "Время вышло", MessageBoxButtons.OK);
                     this.Dispose();
                     this.Close();
                 }
@@ -340,16 +338,7 @@ namespace _3_match
                 this.Controls.Add(TimeText);
             }));
         }
-        private string SetTimerText()
-        {
-            //TimeText.Text = string.Format("{0:HH:mm:ss:ff}");
-            tk = --i;
-            TimeSpan span = TimeSpan.FromMinutes(tk);
-            string label = span.ToString(@"hh\:mm");
-            return label.ToString();
-            //if (i < 0)
-               // timer1.Stop();
-        }
+
 
     }
 }
