@@ -29,21 +29,22 @@ namespace _3_match
         private void Game_Load(object sender, EventArgs e)
         {
             GameManager.game = this;
-            /*for(int y = 0; y < 8; y++)
-            {
-                for(int x=0; x < 8; x++)
-                {
-                    Labels[x, y] = new Label();
-                    Labels[x, y].Location = new Point((x + 10) * 50, (y+1) * 50);
-                    Labels[x, y].Height = 50;
-                    Labels[x, y].Width = 50;
-                    Labels[x, y].BackColor = buttons[x,y].BackColor;
-                    Labels[x, y].Text = buttons[x, y].Text;
-                    Labels[x, y].Text += $" {buttons[x, y].Location.X.ToString()} {buttons[x, y].Location.Y.ToString()}";
-                    this.Controls.Add(Labels[x, y]);
-                }
-            }*/
         }
+
+        private void Game_Shown(object sender, EventArgs e)
+        {
+            //CheckForIllegalCrossThreadCalls = false;
+            string time = "01:00";
+            TimeText.Text = time;
+            RespawnBTN();
+            CheckMatchesAfterRespawn();
+            Thread TimerThread = new Thread(() =>
+            {
+                StartTimer();
+            });
+            TimerThread.Start();
+        }
+
         void ButtonClick(object sender, EventArgs e)
         {
             Button btn = null;
@@ -78,7 +79,7 @@ namespace _3_match
             GameManager.Mathes = 0;
             GameManager.RememberList.Clear();
             GameManager.MatchAndClear(buttons);
-            if (GameManager.Mathes==0)//Если не было ни одного совпадения то взоращаем на место.
+            if (GameManager.Mathes==0)//Если не было ни одного совпадения то взоращаем на прежнии места.
             {
                 buttons[x1, y1] = buffer1;
                 buttons[x2, y2] = buffer2;
@@ -246,20 +247,6 @@ namespace _3_match
             GameManager.MatchAndClear(buttons);
         }
 
-        private void Game_Shown(object sender, EventArgs e)
-        {
-            //CheckForIllegalCrossThreadCalls = false;
-            Thread.Sleep(1500);
-            string time = "01:00";
-            TimeText.Text = time;
-            RespawnBTN();
-            CheckMatchesAfterRespawn();
-            Thread TimerThread = new Thread(() =>
-            {
-                StartTimer();
-            });
-            TimerThread.Start();
-        }
         public void CheckMatchesAfterRespawn()
         {
             if (GameManager.CanMatch)
