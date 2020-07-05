@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
+using System.Linq;
+using System.Media;
 
 namespace _3_match
 {
@@ -15,7 +18,7 @@ namespace _3_match
         public static Game game;
 
         public static bool IsButtonChoosed = false;
-
+        //Обработчик 2-ого нажатия
         public static void SecondClick(Button btn)
         {
             int x2 = btn.Location.X / 50 - 1;
@@ -45,6 +48,7 @@ namespace _3_match
                 IsButtonChoosed = false;
             }
         }
+        //Обработчик 2-ого нажатия
         public static void FirstClick(Button btn)
         {
             x1 = btn.Location.X / 50 - 1;
@@ -54,7 +58,6 @@ namespace _3_match
 
 
         static bool clearedBTN = false;
-        static Button currentBTN;
         static List<Button> collector = new List<Button>();
         static Button[,] toTest = new Button[8, 8];
         public static List<Button> RememberList = new List<Button>();
@@ -78,7 +81,6 @@ namespace _3_match
             // Создаём копию поля для проверки
             CopyBoard(board);
             //_________
-            currentBTN = null;
             collector.Clear();
 
             for (int y = 0; y < 8; y++)
@@ -101,7 +103,6 @@ namespace _3_match
                     {
                         CanMatch = false;
                     }
-                    currentBTN = null;
                     collector.Clear();
                 }
             }
@@ -115,13 +116,14 @@ namespace _3_match
 
         private static void TestButton(int x, int y)
         {
+            //Листы куда мы будем записывать совпадения по горизонтали и по вертикале.
             List<Button> HorizontalList = new List<Button>();
             List<Button> VerticalList = new List<Button>();
 
             HorizontalList.Add(toTest[x, y]);
             VerticalList.Add(toTest[x, y]);
 
-
+            //Проверяем совпадения по горизонтали
             for (int j=x+1; j < 8; j++)
             {
                 if (toTest[x, y].BackColor == toTest[j, y].BackColor)
@@ -130,14 +132,16 @@ namespace _3_match
                 }
                 else
                 {
-                    break;
+                    break;//Если попали на не совпадающие элементы, то выходим из цикла
                 }
             }
-            if (HorizontalList.Count < 3)
+            if (HorizontalList.Count < 3)//Если кол-во элементов меншьше 3-х то очищаем лист
             {
                 HorizontalList.Clear();
             }
+
             collector.Add(toTest[x, y]);
+            //То же самое по вертикали
             for (int k = y+1; k < 8; k++)
             {
                 if (toTest[x, y].BackColor == toTest[x, k].BackColor)
@@ -154,43 +158,52 @@ namespace _3_match
                 VerticalList.Clear();
             }
             
+            //Запись в основоной коллектор(лист) совпадений из горизонтального листа
             for(int j = 0; j < HorizontalList.Count; j++)
             {
-                if (j == 3 && HorizontalList.Count == 4 && !RememberList.Contains(HorizontalList[j]) && HorizontalList[j].Text!="-" && HorizontalList[j].Text != "|" && HorizontalList[j].Text != "(%)")
+                //Если у всего по горизонтали 4 элемента и это уже не является каким-то бонусом то мы респванем горизонтальный рузрушитель
+                if (j == 3 && HorizontalList.Count == 4 && !RememberList.Contains(HorizontalList[j]) && HorizontalList[j].Text!="-" && HorizontalList[j].Text != "|" && HorizontalList[j].Text != "(")
                 {
-                    game.RespawnSpecialBTN(HorizontalList[j], "horizontal");
-                    RememberList.Add(HorizontalList[j]);
+                    game.RespawnSpecialBTN(HorizontalList[j], "horizontal");//Респавн на месте 4-ого элемента горизонтального разрушителя
+                    RememberList.Add(HorizontalList[j]);//Запоминаем что мы в этом месте заспванили разрушитель, чтобы он не удалился или перезаписался при дальнейшей проверки доски
                     game.SetScore(1);
                 }
+                //Аналогично с бомбой.
                 if (j == HorizontalList.Count-1 && HorizontalList.Count >= 5)
                 {
                     game.RespawnSpecialBTN(HorizontalList[j], "bomb");
                     RememberList.Add(HorizontalList[j]);
                     game.SetScore(1);
                 }
+                //Далее если мы наткнулись не на спецальное поле которое мы в этом ходу должны зареспавнить то...
                 else if (!RememberList.Contains(HorizontalList[j]))
                 {
+                    //если это горизонтальнй бонус то добваляем в коллектор всю строку
                     if (HorizontalList[j].Text == "-")
                     {
                         addAllHorizontal(HorizontalList[j]);
                     }
+                    //Если вертикальной то весь столбец
                     else if(HorizontalList[j].Text == "|")
                     {
                         addAllVertical(HorizontalList[j]);
                     }
-                    else if(HorizontalList[j].Text == "(%)")
+                    //Если это бомба то квадрат вокруг этой бомбы
+                    else if(HorizontalList[j].Text == "(")
                     {
                         BombActivation(HorizontalList[j]);
                     }
+                    //если это обычное поле то просто добовляем эту ячейку в коллектор
                     else
                     {
                         collector.Add(HorizontalList[j]);
                     }
                 }
             }
+            //Аналогчино для вертикального списка
             for (int j = 0; j < VerticalList.Count; j++)
             {
-                if (j == 3 && VerticalList.Count == 4 && !RememberList.Contains(VerticalList[j]) && VerticalList[j].Text!="|" && VerticalList[j].Text != "-" && VerticalList[j].Text != "(%)")
+                if (j == 3 && VerticalList.Count == 4 && !RememberList.Contains(VerticalList[j]) && VerticalList[j].Text!="|" && VerticalList[j].Text != "-" && VerticalList[j].Text != "(")
                 {
                     game.RespawnSpecialBTN(VerticalList[j], "vertical");
                     RememberList.Add(VerticalList[j]);
@@ -212,7 +225,7 @@ namespace _3_match
                     {
                         addAllVertical(VerticalList[j]);
                     }
-                    else if(VerticalList[j].Text == "(%)")
+                    else if(VerticalList[j].Text == "(")
                     {
                         BombActivation(VerticalList[j]);
                     }
@@ -222,40 +235,6 @@ namespace _3_match
                     }
                 }
             }
-
-            // Тайл уже проверен, пропускаем
-            /*if (toTest[x, y] == null)
-            {
-                return;
-            }
-            // Начинаем проверять блок
-            if (currentBTN == null)
-            {
-                currentBTN = toTest[x, y];
-                toTest[x, y] = null;
-                collector.Add(currentBTN);
-            }
-            else if (currentBTN.Text != toTest[x, y].Text)
-            {
-                return;
-            }
-            else
-            {
-                collector.Add(toTest[x, y]);
-                toTest[x, y] = null;
-            }
-
-            // Если мы обрабатываем этот тайл, то проверяем все тайлы вокруг него
-            if (x > 0)
-                 TestButton(x - 1, y);
-             if (y > 0)
-                 TestButton(x, y - 1);
-             if (x < 8 - 1)
-                 TestButton(x + 1, y);
-             if (y < 8 - 1)
-                 TestButton(x, y + 1);
-              */
-
         }
         private static void addAllHorizontal(Button btn)
         {
@@ -268,7 +247,7 @@ namespace _3_match
                     {
                         addAllVertical(toTest[i, y]);
                     }
-                    else if (toTest[i, y].Text == "(%)")
+                    else if (toTest[i, y].Text == "(")
                     {
                         BombActivation(toTest[i, y]);
                     }
@@ -291,7 +270,7 @@ namespace _3_match
                     {
                         addAllHorizontal(toTest[x, i]);
                     }
-                    else if (toTest[x, i].Text == "(%)")
+                    else if (toTest[x, i].Text == "(")
                     {
                         BombActivation(toTest[x, i]);
                     }
@@ -322,7 +301,7 @@ namespace _3_match
                             {
                                 addAllHorizontal(toTest[j, k]);
                             }
-                            else if (toTest[j, k].Text == "(%)" && j != x && k!= y)
+                            else if (toTest[j, k].Text == "(" && j != x && k!= y)
                             {
                                 BombActivation(toTest[j, k]);
                             }

@@ -23,8 +23,7 @@ namespace _3_match
         }
 
         private Button[,] buttons = new Button[8,8];
-        private Label[,] Labels = new Label[8, 8];
-        private SoundPlayer DefoultBoom = new SoundPlayer(@"C:\Users\Goba-PC\source\repos\3_match\Mach3\3_match\Sounds\DefoultBoom.wav");
+        //private SoundPlayer DefoultBoom = new SoundPlayer(@"C:\Users\Goba-PC\source\repos\3_match\Mach3\3_match\Sounds\DefoultBoom.wav");
         string dir = AppDomain.CurrentDomain.BaseDirectory;
 
         private void Game_Load(object sender, EventArgs e)
@@ -76,37 +75,15 @@ namespace _3_match
             buttons[x1, y1] = buffer2;
             buttons[x2, y2] = buffer1;
             Animate(x1, y1, x2, y2);
-            LabelText();
             GameManager.Mathes = 0;
             GameManager.RememberList.Clear();
             GameManager.MatchAndClear(buttons);
-            /*if (GameManager.Mathes==0)
+            if (GameManager.Mathes==0)//Если не было ни одного совпадения то взоращаем на место.
             {
                 buttons[x1, y1] = buffer1;
                 buttons[x2, y2] = buffer2;
                 Animate(x2, y2, x1, y1);
-                LabelText();
-            }*/
-        }
-        public void LabelText()
-        {
-            /*for (int y = 0; y < 8; y++)
-            {
-                for (int x = 0; x < 8; x++)
-                {
-                    try
-                    {
-                        Labels[x, y].Text = buttons[x, y].Text;
-                        Labels[x, y].Text += $" {buttons[x, y].Location.X.ToString()} {buttons[x, y].Location.Y.ToString()}";
-                        Labels[x, y].BackColor = buttons[x, y].BackColor;
-                    }
-                    catch
-                    {
-                        Labels[x, y].Text = "-----";
-                        Labels[x, y].BackColor = Color.White;
-                    }
-                }
-            }*/
+            }
         }
         public void DestroyBTN(Button btn) 
         {
@@ -114,11 +91,7 @@ namespace _3_match
             int y = btn.Location.Y / 50 - 1;
             buttons[x, y] = null;
             Controls.Remove(btn);
-            DefoultBoom.Play();
-        }
-        public void DestroyForSpecialBTN(Button btn)
-        {
-            Controls.Remove(btn);
+            //DefoultBoom.Play();
         }
         public void RespawnSpecialBTN(Button btn, string type)
         {
@@ -126,20 +99,88 @@ namespace _3_match
             int y = btn.Location.Y / 50 - 1;
             if (type == "vertical")
             {
+                if (buttons[x, y].BackColor == Color.Transparent)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Vertical\\ТриугольникВ.png");
+                }
+                if (buttons[x, y].BackColor == Color.Red)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Vertical\\РомбВ.png");
+
+                }
+                if (buttons[x, y].BackColor == Color.Aquamarine)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Vertical\\КругВ.png");
+
+                }
+                if (buttons[x, y].BackColor == Color.DarkBlue)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Vertical\\КвадратВ.png");
+
+                }
+                if (buttons[x, y].BackColor == Color.AliceBlue)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Vertical\\ПятиугольникВ.png");
+                }
                 buttons[x, y].Text = "|";
-                buttons[x, y].BackColor = btn.BackColor;
+                buttons[x, y].ForeColor = Color.Transparent;
             }
             if (type == "horizontal")
             {
+                if (buttons[x, y].BackColor == Color.Transparent)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Horizontal\\ТриугольникГ.png");
+                }
+                if (buttons[x, y].BackColor == Color.Red)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Horizontal\\РомбГ.png");
+
+                }
+                if (buttons[x, y].BackColor == Color.Aquamarine)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Horizontal\\КругГ.png");
+
+                }
+                if (buttons[x, y].BackColor == Color.DarkBlue)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Horizontal\\КвадратГ.png");
+
+                }
+                if (buttons[x, y].BackColor == Color.AliceBlue)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Horizontal\\ПятиугольникГ.png");
+                }
                 buttons[x, y].Text = "-";
-                buttons[x, y].BackColor = btn.BackColor;
+                buttons[x, y].ForeColor = Color.Transparent;
             }
             if (type == "bomb")
             {
-                buttons[x, y].Text = "(%)";
-                Controls.Add(buttons[x, y]);
+                if (buttons[x, y].BackColor == Color.Transparent)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Bomb\\ТриугольникБ.png");
+                }
+                if (buttons[x, y].BackColor == Color.Red)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Bomb\\РомбБ.png");
+
+                }
+                if (buttons[x, y].BackColor == Color.Aquamarine)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Bomb\\КругБ.png");
+
+                }
+                if (buttons[x, y].BackColor == Color.DarkBlue)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Bomb\\КвадратБ.png");
+
+                }
+                if (buttons[x, y].BackColor == Color.AliceBlue)
+                {
+                    buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Bomb\\ПятиугольникБ.png");
+                }
+                buttons[x, y].Text = "(";
+                buttons[x, y].ForeColor = Color.Purple;
             }
-            //buttons[x, y].Click += ButtonClick;
         }
         public void RespawnBTN()
         {
@@ -202,13 +243,12 @@ namespace _3_match
                     }
                 }
             }
-            //LabelText();
             GameManager.MatchAndClear(buttons);
         }
 
         private void Game_Shown(object sender, EventArgs e)
         {
-            CheckForIllegalCrossThreadCalls = false;
+            //CheckForIllegalCrossThreadCalls = false;
             Thread.Sleep(1500);
             string time = "01:00";
             TimeText.Text = time;
@@ -229,9 +269,10 @@ namespace _3_match
                 GameManager.MatchAndClear(buttons);
             }
         }
+        //Функция для перстановки 2-х элементов.
         public void Animate(int x1,int y1, int x2, int y2)
         {
-            int speed = 5;
+            int speed = 10;
             int XPos1 = (x1 + 1) * 50;
             int XPos2 = (x2 + 1) * 50;
             int YPos1 = (y1 + 1) * 50;
@@ -252,6 +293,7 @@ namespace _3_match
             }
             while (buttons[x1,y1].Location.X != XPos1 | buttons[x1,y1].Location.Y != YPos1 | buttons[x2,y2].Location.X != XPos2 | buttons[x2,y2].Location.Y != YPos2);
         }
+        //Эта функция для падения элемента вниз
         public void Animate(int x,int y)
         {
             int speed = 25;
@@ -275,7 +317,7 @@ namespace _3_match
             }
             while (buttons[x, y].Location != Finish);
         }
-
+        //Функция определяет является ли вектор движения одного элемента к другому положительным или отрицательным.
         private int GetSign(int x)
         {
             if (x < 0)
@@ -296,22 +338,12 @@ namespace _3_match
             ScoreText.Text = (Convert.ToInt32(ScoreText.Text) + add).ToString();
         }
 
-        //System.Timers.Timer timer = new System.Timers.Timer();
-        int i=10;
+        int i=60;
         int tk;
         private void StartTimer()
         {
             System.Timers.Timer timer = new System.Timers.Timer();
-            //timer1?.Dispose();
-            /* var Timer;
-             var date = DateTime.Now;
-             Timer.Tick += (o, args) =>
-             {
-                 TimeText.BeginInvoke((MethodInvoker)(() => TimeText.Text = (date - DateTime.UtcNow).ToString()));
-             };
-             Timer.Start();*/
-            //TimeText.Text = time;
-            timer.AutoReset = true; // Чтобы операции удаления не перекрывались
+            timer.AutoReset = true; 
             timer.Interval = 1 * 1000;
             timer.Enabled = true;
             timer.Elapsed += (o,args) => {
