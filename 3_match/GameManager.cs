@@ -162,7 +162,7 @@ namespace _3_match
                     RememberList.Add(HorizontalList[j]);
                     game.SetScore(1);
                 }
-                if (j == 4 && HorizontalList.Count >= 5)
+                if (j == HorizontalList.Count-1 && HorizontalList.Count >= 5)
                 {
                     game.RespawnSpecialBTN(HorizontalList[j], "bomb");
                     RememberList.Add(HorizontalList[j]);
@@ -196,7 +196,7 @@ namespace _3_match
                     RememberList.Add(VerticalList[j]);
                     game.SetScore(1);
                 }
-                if (j == 4 && VerticalList.Count >= 5)
+                if (j == VerticalList.Count-1 && VerticalList.Count >= 5)
                 {
                     game.RespawnSpecialBTN(VerticalList[j], "bomb");
                     RememberList.Add(VerticalList[j]);

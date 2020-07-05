@@ -16,6 +16,7 @@ namespace _3_match
 {
     public partial class Game : Form
     {
+        public Form MenuForm;
         public Game()
         {
             InitializeComponent();
@@ -144,10 +145,10 @@ namespace _3_match
         {
             for(int x = 0; x < 8; x++)
             {
-                for(int y=0; y < 8; y++)
+                for (int y = 0; y < 8; y++)
                 {
-                   
-                    if (buttons[x, y]==null)
+
+                    if (buttons[x, y] == null)
                     {
                         if (y > 0)
                         {
@@ -160,35 +161,40 @@ namespace _3_match
                         else
                         {
                             Random random = new Random();
-                            Thread.Sleep(100);
+                            Thread.Sleep(10);
                             buttons[x, y] = new Button();
                             this.Controls.Add(buttons[x, y]);
                             buttons[x, y].Height = 50;
                             buttons[x, y].Width = 50;
-                            int type = random.Next(1, 5);
+                            int type = random.Next(1, 6);
                             buttons[x, y].Click += ButtonClick;
                             if (type == 1)
                             {
-                                buttons[x, y].BackColor = Color.Brown;
-                                buttons[x, y].BackgroundImage = Image.FromFile(dir + "\\Images\\Triangle.jpg");
+                                buttons[x, y].BackColor = Color.Transparent;
+                                buttons[x, y].BackgroundImage = Image.FromFile(dir + "\\Images\\Триугольник.png");
                             }
                             if (type == 2)
                             {
                                 buttons[x, y].BackColor = Color.Red;
-                                buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Romb.jpg");
+                                buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Ромб.png");
 
                             }
                             if (type == 3)
                             {
                                 buttons[x, y].BackColor = Color.Aquamarine;
-                                buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Circle.jpg");
+                                buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Круг.png");
 
                             }
                             if (type == 4)
                             {
                                 buttons[x, y].BackColor = Color.DarkBlue;
-                                buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Squre.jpg");
+                                buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Квадрат.png");
 
+                            }
+                            if(type == 5)
+                            {
+                                buttons[x, y].BackColor = Color.AliceBlue;
+                                buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Пятиугольник.png");
                             }
                             buttons[x, y].Location = new Point((x + 1) * 50, (y + 1) * 50);
                         }
@@ -202,12 +208,12 @@ namespace _3_match
 
         private void Game_Shown(object sender, EventArgs e)
         {
+            CheckForIllegalCrossThreadCalls = false;
             Thread.Sleep(1500);
             string time = "01:00";
             TimeText.Text = time;
             RespawnBTN();
             CheckMatchesAfterRespawn();
-            //CheckForIllegalCrossThreadCalls = false;
             Thread TimerThread = new Thread(() =>
             {
                 StartTimer();
@@ -291,7 +297,7 @@ namespace _3_match
         }
 
         //System.Timers.Timer timer = new System.Timers.Timer();
-        int i=60;
+        int i=10;
         int tk;
         private void StartTimer()
         {
@@ -320,25 +326,36 @@ namespace _3_match
                 {
                     timer.Dispose();
                     MessageBox.Show($"Время закончилось ваш резултат:{ScoreText.Text}", "Время вышло", MessageBoxButtons.OK);
-                    this.Dispose();
                     this.Close();
                 }
             }));
             };
             timer.Start();
         }
-        private void TimePassed(object source, System.Timers.ElapsedEventArgs e)
+
+        private void Game_FormClosed(object sender, FormClosedEventArgs e)
         {
-            BeginInvoke((Action)(() =>
-            {
-                tk = --i;
-                TimeSpan span = TimeSpan.FromMinutes(tk);
-                string label = span.ToString(@"hh\:mm");
-                TimeText.Text = label.ToString();
-                this.Controls.Add(TimeText);
-            }));
+            MenuForm.Show();
         }
 
+        private void label1_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void ScoreText_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TimeText_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

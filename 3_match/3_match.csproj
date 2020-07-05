@@ -96,16 +96,19 @@
     <Folder Include="Sounds\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\Circle.jpg">
+    <Content Include="Images\Квадрат.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\Romb.jpg">
+    <Content Include="Images\Круг.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\Squre.jpg">
+    <Content Include="Images\Пятиугольник.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\Triangle.jpg">
+    <Content Include="Images\Ромб.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Триугольник.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

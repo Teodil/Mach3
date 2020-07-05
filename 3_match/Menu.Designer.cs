@@ -33,11 +33,12 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(300, 296);
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button1.Location = new System.Drawing.Point(297, 199);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(168, 69);
             this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
+            this.button1.Text = "Играть";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -48,7 +49,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.button1);
             this.Name = "Menu";
-            this.Text = "Form1";
+            this.Text = "Меню";
             this.Load += new System.EventHandler(this.Menu_Load);
             this.ResumeLayout(false);
 

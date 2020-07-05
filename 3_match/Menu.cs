@@ -19,8 +19,9 @@ namespace _3_match
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Game game = new Game();
+            Game game = new Game() { MenuForm = this };
             game.Show();
+            this.Hide();
         }
 
         private void Menu_Load(object sender, EventArgs e)
