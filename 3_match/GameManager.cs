@@ -15,14 +15,17 @@ namespace _3_match
         private static int x1 = 0;
         private static int y1 = 0;
 
+        const int BoardSize = 8;
+        const int ButtonSize = 50;
+
         public static Game game;
 
         public static bool IsButtonChoosed = false;
         //Обработчик 2-ого нажатия
         public static void SecondClick(Button btn)
         {
-            int x2 = btn.Location.X / 50 - 1;
-            int y2 = btn.Location.Y / 50 - 1;
+            int x2 = btn.Location.X / ButtonSize - 1;
+            int y2 = btn.Location.Y / ButtonSize - 1;
             if (x1 == x2)
             {
                 if(y1 == y2 + 1 | y1 == y2 - 1)
@@ -51,23 +54,23 @@ namespace _3_match
         //Обработчик 2-ого нажатия
         public static void FirstClick(Button btn)
         {
-            x1 = btn.Location.X / 50 - 1;
-            y1 = btn.Location.Y / 50 - 1;
+            x1 = btn.Location.X / ButtonSize - 1;
+            y1 = btn.Location.Y / ButtonSize - 1;
             IsButtonChoosed = true;
         }
 
 
         static bool clearedBTN = false;
         static List<Button> collector = new List<Button>();
-        static Button[,] toTest = new Button[8, 8];
+        static Button[,] toTest = new Button[BoardSize, BoardSize];
         public static List<Button> RememberList = new List<Button>();
         public static bool CanMatch = true;
 
         static void CopyBoard(Button[,] source)
         {
-            for (int y = 0; y < 8; y++)
+            for (int y = 0; y < BoardSize; y++)
             {
-                for (int x = 0; x < 8; x++)
+                for (int x = 0; x < BoardSize; x++)
                 {
                     toTest[x, y] = source[x, y];
                 }
@@ -83,9 +86,9 @@ namespace _3_match
             //_________
             collector.Clear();
 
-            for (int y = 0; y < 8; y++)
+            for (int y = 0; y < BoardSize; y++)
             {
-                for (int x = 0; x < 8; x++)
+                for (int x = 0; x < BoardSize; x++)
                 {
                     TestButton(x, y);
                     if (collector.Count >= 3)
@@ -124,7 +127,7 @@ namespace _3_match
             VerticalList.Add(toTest[x, y]);
 
             //Проверяем совпадения по горизонтали
-            for (int j=x+1; j < 8; j++)
+            for (int j=x+1; j < BoardSize; j++)
             {
                 if (toTest[x, y].BackColor == toTest[j, y].BackColor)
                 {
@@ -142,7 +145,7 @@ namespace _3_match
 
             collector.Add(toTest[x, y]);
             //То же самое по вертикали
-            for (int k = y+1; k < 8; k++)
+            for (int k = y+1; k < BoardSize; k++)
             {
                 if (toTest[x, y].BackColor == toTest[x, k].BackColor)
                 {
@@ -238,8 +241,8 @@ namespace _3_match
         }
         private static void addAllHorizontal(Button btn)
         {
-            int y = btn.Location.Y / 50 - 1;
-            for(int i = 0; i < 8; i++)
+            int y = btn.Location.Y / ButtonSize - 1;
+            for(int i = 0; i < BoardSize; i++)
             {
                 if (!collector.Contains(toTest[i, y]))
                 {
@@ -261,8 +264,8 @@ namespace _3_match
         }
         private static void addAllVertical(Button btn)
         {
-            int x = btn.Location.X / 50 - 1;
-            for (int i = 0; i < 8; i++)
+            int x = btn.Location.X / ButtonSize - 1;
+            for (int i = 0; i < BoardSize; i++)
             {
                 if (!collector.Contains(toTest[x, i]))
                 {
@@ -283,8 +286,8 @@ namespace _3_match
         }
         private static void BombActivation(Button btn)
         {
-            int x = btn.Location.X / 50 - 1;
-            int y = btn.Location.Y / 50 - 1;
+            int x = btn.Location.X / ButtonSize - 1;
+            int y = btn.Location.Y / ButtonSize - 1;
             for(int j = x - 1; j <= x + 1; j++)
             {
                 for(int k = y - 1; k <= y + 1; k++)

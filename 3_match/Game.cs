@@ -17,12 +17,15 @@ namespace _3_match
     public partial class Game : Form
     {
         public Form MenuForm;
+
+        const int BoardSize = 8;
+        const int ButtonSize = 50;
         public Game()
         {
             InitializeComponent();
         }
 
-        private Button[,] buttons = new Button[8,8];
+        private Button[,] buttons = new Button[BoardSize,BoardSize];
         //private SoundPlayer DefoultBoom = new SoundPlayer(@"C:\Users\Goba-PC\source\repos\3_match\Mach3\3_match\Sounds\DefoultBoom.wav");
         string dir = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -48,9 +51,9 @@ namespace _3_match
         void ButtonClick(object sender, EventArgs e)
         {
             Button btn = null;
-            for (int x = 0; x < 8; x++)
+            for (int x = 0; x < BoardSize; x++)
             {
-                for (int y = 0; y < 8; y++)
+                for (int y = 0; y < BoardSize; y++)
                 {
                     if (sender.Equals(buttons[x, y]))
                     {
@@ -79,25 +82,25 @@ namespace _3_match
             GameManager.Mathes = 0;
             GameManager.RememberList.Clear();
             GameManager.MatchAndClear(buttons);
-            if (GameManager.Mathes==0)//Если не было ни одного совпадения то взоращаем на прежнии места.
+            /*if (GameManager.Mathes==0)//Если не было ни одного совпадения то взоращаем на прежнии места.
             {
                 buttons[x1, y1] = buffer1;
                 buttons[x2, y2] = buffer2;
                 Animate(x2, y2, x1, y1);
-            }
+            }*/
         }
         public void DestroyBTN(Button btn) 
         {
-            int x = btn.Location.X / 50 - 1;
-            int y = btn.Location.Y / 50 - 1;
+            int x = btn.Location.X / ButtonSize - 1;
+            int y = btn.Location.Y / ButtonSize - 1;
             buttons[x, y] = null;
             Controls.Remove(btn);
             //DefoultBoom.Play();
         }
         public void RespawnSpecialBTN(Button btn, string type)
         {
-            int x = btn.Location.X / 50 - 1;
-            int y = btn.Location.Y / 50 - 1;
+            int x = btn.Location.X / ButtonSize - 1;
+            int y = btn.Location.Y / ButtonSize - 1;
             if (type == "vertical")
             {
                 if (buttons[x, y].BackColor == Color.Transparent)
@@ -185,9 +188,9 @@ namespace _3_match
         }
         public void RespawnBTN()
         {
-            for(int x = 0; x < 8; x++)
+            for(int x = 0; x < BoardSize; x++)
             {
-                for (int y = 0; y < 8; y++)
+                for (int y = 0; y < BoardSize; y++)
                 {
 
                     if (buttons[x, y] == null)
@@ -196,7 +199,7 @@ namespace _3_match
                         {
                             buttons[x, y] = buttons[x, y - 1];
                             buttons[x, y - 1] = null;
-                            //buttons[x, y].Location = new Point((x + 1) * 50, (y + 1) * 50);
+                            //buttons[x, y].Location = new Point((x + 1) * ButtonSize, (y + 1) * ButtonSize);
                             Animate(x, y);
                             RespawnBTN();
                         }
@@ -206,8 +209,8 @@ namespace _3_match
                             Thread.Sleep(10);
                             buttons[x, y] = new Button();
                             this.Controls.Add(buttons[x, y]);
-                            buttons[x, y].Height = 50;
-                            buttons[x, y].Width = 50;
+                            buttons[x, y].Height = ButtonSize;
+                            buttons[x, y].Width = ButtonSize;
                             int type = random.Next(1, 6);
                             buttons[x, y].Click += ButtonClick;
                             if (type == 1)
@@ -238,7 +241,7 @@ namespace _3_match
                                 buttons[x, y].BackColor = Color.AliceBlue;
                                 buttons[x, y].BackgroundImage = new Bitmap(dir + "\\Images\\Пятиугольник.png");
                             }
-                            buttons[x, y].Location = new Point((x + 1) * 50, (y + 1) * 50);
+                            buttons[x, y].Location = new Point((x + 1) * ButtonSize, (y + 1) * ButtonSize);
                         }
                         this.Update();
                     }
@@ -260,10 +263,10 @@ namespace _3_match
         public void Animate(int x1,int y1, int x2, int y2)
         {
             int speed = 10;
-            int XPos1 = (x1 + 1) * 50;
-            int XPos2 = (x2 + 1) * 50;
-            int YPos1 = (y1 + 1) * 50;
-            int YPos2 = (y2 + 1) * 50;
+            int XPos1 = (x1 + 1) * ButtonSize;
+            int XPos2 = (x2 + 1) * ButtonSize;
+            int YPos1 = (y1 + 1) * ButtonSize;
+            int YPos2 = (y2 + 1) * ButtonSize;
 
             Point Delta1 = new Point(XPos2, YPos2);
             Point Delta2 = new Point(XPos1, YPos1);
@@ -284,10 +287,10 @@ namespace _3_match
         public void Animate(int x,int y)
         {
             int speed = 25;
-            int XPosS = (x+1) * 50;
-            int YPosS = y * 50;
-            int XPosF = (x+1) * 50;
-            int YPosF = (y+1) * 50;
+            int XPosS = (x+1) * ButtonSize;
+            int YPosS = y * ButtonSize;
+            int XPosF = (x+1) * ButtonSize;
+            int YPosF = (y+1) * ButtonSize;
 
             Point DeltaS = new Point(XPosS, YPosS);
             Point Finish = new Point(XPosF, YPosF);
@@ -297,7 +300,7 @@ namespace _3_match
 
             do
             {
-                Thread.Sleep(50);
+                Thread.Sleep(ButtonSize);
                 DeltaS = new Point(DeltaS.X + speed * GetSign(XPosF - XPosS), DeltaS.Y + speed * GetSign(YPosF - YPosS));
                 buttons[x, y].Location = DeltaS;
                 Update();
@@ -325,7 +328,7 @@ namespace _3_match
             ScoreText.Text = (Convert.ToInt32(ScoreText.Text) + add).ToString();
         }
 
-        int i=60;
+        int i=300;
         int tk;
         private void StartTimer()
         {
